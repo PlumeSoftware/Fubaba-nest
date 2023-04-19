@@ -14,11 +14,11 @@ import { AgentModule } from 'app/agent/agent.module';
       imports: [ConfigModule,AgentModule],
       useFactory: (configService: ConfigService) => ({
         type: 'mssql',
-        host: 'localhost',
-        port: 1433,
-        username: 'sa',
-        password: 'fbb&654321',
-        database: 'fbb',
+        host: configService.get('SQL_HOST'),
+        port: Number(configService.get('SQL_PORT')),
+        username: configService.get('SQL_USER'),
+        password: configService.get('SQL_PASS'),
+        database: configService.get('SQL_DB'),
         entities: entities,
         options: {
           encrypt: false,
