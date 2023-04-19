@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { meta } from '../lib/entity/meta';
+import { entities } from '../lib/entity/meta';
 import { APP_GUARD } from '@nestjs/core';
+import { AgentModule } from 'app/agent/agent.module';
 // import { AuthGuard } from '../auth/guard/auth.guard';
 // import { LogService } from '../ops/log/log.service';
 // import { MailService } from '../ops/mail/mail.service';
@@ -10,7 +11,7 @@ import { APP_GUARD } from '@nestjs/core';
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule,AgentModule],
       useFactory: (configService: ConfigService) => ({
         type: 'mssql',
         host: 'localhost',
@@ -18,7 +19,7 @@ import { APP_GUARD } from '@nestjs/core';
         username: 'sa',
         password: 'fbb&654321',
         database: 'fbb',
-        // entities: meta,
+        entities: entities,
         options: {
           encrypt: false,
           trustServerCertificate: true,
@@ -30,7 +31,7 @@ import { APP_GUARD } from '@nestjs/core';
     }),
 
     // 部分模块全局使用，故全局导入orm_meta文件
-    TypeOrmModule.forFeature(meta),
+    TypeOrmModule.forFeature(entities),
   ],
   providers: [
     //接口鉴权、日志管理和邮件功能需要全局使用

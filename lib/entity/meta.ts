@@ -1,5 +1,5 @@
-import { Log } from "./meta/log";
+import { Agent } from "../entity/meta/agent";
 
-export const meta = [
-    Log
+export const entities = [
+   Agent
 ]
