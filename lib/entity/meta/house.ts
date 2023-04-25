@@ -25,15 +25,15 @@ export class House extends BaseEntity {
     @Column({ type: 'nchar', name: 'hus_fitment', comment: '装修情况 ' })
     houseFitment: string
     @Column({ type: 'int', name: 'hus_expose', comment: '房屋朝向' })
-    houseExpose: number
+    houseExposeCode: number
     @Column({ type: 'int', name: 'hus_usage', comment: '房屋用途' })
-    houseUsage: number
+    houseUsageCode: number
     @Column({ type: 'nvarchar', name: 'hus_memo', comment: '房评' })
     houseMemo: string
     @Column({ type: 'nvarchar', name: 'hus_address', comment: '房源地址' })
     houseAddress: string
     @Column({ type: 'int', name: 'hus_jiegou', comment: '房屋结构' })
-    houseConstruction: number
+    houseConstructionCode: number
     @Column({ type: 'varchar', name: 't1', comment: '房源特色，逗号分割' })
     houseFeatureCode: string
     @Column({ type: 'varchar', name: 't2', comment: '房源内部设施，逗号分割' })
