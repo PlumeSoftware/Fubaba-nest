@@ -9,9 +9,4 @@ export class FyService {
         @InjectRepository(Fy)
         private readonly fyRepository: Repository<Fy>,
     ){}
-
-    //获取房源信息  
-    public async getAgentList(): Promise<Fy[]> {
-        return await this.fyRepository.find();
-    }
 }
