@@ -20,9 +20,12 @@ export class HouseType extends BaseEntity {
 
 @Entity({ name: "FY_YONGTU" })
 export class HouseUsage extends BaseEntity {
-    @PrimaryColumn({ type: 'smallint', name: 'HERP_USAGE', comment: '用途id' }) usageId: number
-    @Column({ type: 'int', name: 'yongtu_no', comment: '用途' }) usageNo: number
-    @Column({ type: 'varchar', name: 'yongtu', comment: '用途名称' }) usage: string
+    @PrimaryColumn({ type: 'smallint', name: 'HERP_USAGE', comment: '用途id' }) 
+    usageId: number
+    @Column({ type: 'int', name: 'yongtu_no', comment: '用途' }) 
+    usageNo: number
+    @Column({ type: 'varchar', name: 'yongtu', comment: '用途名称' }) 
+    usage: string
 }
 
 @Entity({ name: "FY_ZHUANGXIU" })
