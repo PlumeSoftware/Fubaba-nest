@@ -3,7 +3,7 @@ import { Entity, Column, BaseEntity, PrimaryColumn, Generated } from "typeorm"
 @Entity({ name: "SYS_USER" })
 export class Agent extends BaseEntity {
     @PrimaryColumn({type:'int',name:'USER_ID',comment:'经纪人id'})
-    userId: number
+    agentId: number
     @Column({type:'varchar',name:'REAL_NAME',comment:'经纪人真实姓名'})
     realName: string
     @Column({type:'char',name:'TEL',comment:'经纪人电话'})

@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { entities } from '../lib/entity/meta';
 import { APP_GUARD } from '@nestjs/core';
 import { AgentModule } from 'app/agent/agent.module';
+import { FyModule } from 'app/fy/fy.module';
 // import { AuthGuard } from '../auth/guard/auth.guard';
 // import { LogService } from '../ops/log/log.service';
 // import { MailService } from '../ops/mail/mail.service';
@@ -11,7 +12,7 @@ import { AgentModule } from 'app/agent/agent.module';
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule,AgentModule],
+      imports: [ConfigModule,AgentModule,FyModule],
       useFactory: (configService: ConfigService) => ({
         type: 'mssql',
         host: configService.get('SQL_HOST'),

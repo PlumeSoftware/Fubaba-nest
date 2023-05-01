@@ -2,11 +2,81 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Fy } from '../../lib/entity/meta/fy';
 import { Repository } from 'typeorm';
+import { FyRes } from 'lib/entity/response/fyRes';
+import { House } from 'lib/entity/meta/house';
+import { Agent } from 'lib/entity/meta/agent';
+import { HouseExtra, PictureRes } from 'lib/entity/response/houseRes';
+import { HouseConstruction, HouseFitment, HouseType } from 'lib/entity/dic/house';
+import { Picture } from 'lib/entity/meta/picture';
 
 @Injectable()
 export class FyService {
     constructor(
         @InjectRepository(Fy)
         private readonly fyRepository: Repository<Fy>,
-    ){}
+
+        @InjectRepository(House)
+        private readonly houseRepository: Repository<House>,
+
+        @InjectRepository(Agent)
+        private readonly agentRepository: Repository<Agent>,
+
+        @InjectRepository(HouseConstruction)
+        private readonly houseConstructionRepository: Repository<HouseConstruction>,
+
+        @InjectRepository(HouseFitment)
+        private readonly houseFitmentRepository: Repository<HouseFitment>,
+
+        @InjectRepository(HouseType)
+        private readonly houseTypeRepository: Repository<HouseType>,
+
+        @InjectRepository(Picture)
+        private readonly pictureRepository: Repository<Picture>,
+    ) { }
+
+
+    public async getFyInfo(page: number): Promise<Array<Fy>> {
+        const result = await this.fyRepository.find({
+            take: 10,
+            order: {
+                releaseTime: 'DESC',
+            }
+        })
+
+        return result;
+    }
+
+    public async getFyInfoById(reqId: string): Promise<FyRes> {
+        const reqInfo = (await this.fyRepository.find({ where: { reqId: reqId } }))[0];
+        const houseInfo = (await this.houseRepository.find({ where: { houseId: reqInfo.reqHusId } }))[0]
+        const agentInfo = (await this.agentRepository.find({ where: { agentId: reqInfo.agentId } }))[0]
+
+        let extra: HouseExtra = {
+            houseFitment: '',
+            houseConstruction: '',
+            pictures: [],
+        }
+        //装修情况
+        extra.houseFitment = houseInfo.houseFitment;
+        while (extra.houseFitment.indexOf(' ') != -1) {
+            extra.houseFitment = extra.houseFitment.replace(' ', '');
+        }
+        //结构信息
+        extra.houseConstruction = (await this.houseConstructionRepository.find({ where: { constructionId: houseInfo.houseConstructionCode } }))[0].construction;
+
+        //图片信息
+        const picture_origin = await this.pictureRepository.find({ where: { houseId: houseInfo.houseId } })
+        extra.pictures.push(...picture_origin.map(i => new PictureRes(i)))
+
+        //房源用途
+        extra.houseUsage = (await this.houseTypeRepository.find({ where: { typeId: houseInfo.houseUsageCode } }))[0].type;
+        const result = new FyRes(reqInfo, agentInfo, houseInfo, extra)
+        return result;
+
+        //方向
+
+        //内部设施
+
+        //房源特色
+    }
 }
