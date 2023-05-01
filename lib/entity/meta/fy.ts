@@ -13,11 +13,13 @@ export class Fy extends BaseEntity {
     @Column({ type: 'money', name: 'REQ_AMT2', comment: '租房价格' })
     reqAmt2: number
     @Column({ type: 'varchar', name: 'REQ_EMP_CODE', comment: '经纪人id' })
-    reqEmpCode: string
+    agentId: number
     @Column({ type: 'int', name: 'REQ_STATUS', comment: '出售信息状态，0--可用' })
     reqStatus: number
     @Column({ type: 'money', name: 'REQ_AMT3', comment: '房源总价' })
     reqAmt3: number
     @Column({ type: 'varchar', name: 'VR_FLAG', comment: '是否存在vr，1--存在' })
     vrFlag: string
+    @Column({ type:'datetime',name:'REQ_NEW_DATE',comment:'发布时间'})
+    releaseTime:Date
 }

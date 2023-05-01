@@ -45,7 +45,7 @@ export class HouseFitment extends BaseEntity {
 
 @Entity({ name: "FY_CHAOXIANG" })
 export class HouseExpose extends BaseEntity {
-    @Column({ type: 'smallint', name: 'HERP_EXPOSE', comment: '朝向id' })
+    @PrimaryColumn({ type: 'smallint', name: 'HERP_EXPOSE', comment: '朝向id' })
     exposeId: number
     @Column({ type: 'int', name: 'chaoxiang_no', comment: '朝向' })
     exposeNo: number
