@@ -20,6 +20,8 @@ export class Fy extends BaseEntity {
     reqAmt3: number
     @Column({ type: 'varchar', name: 'VR_FLAG', comment: '是否存在vr，1--存在' })
     vrFlag: string
-    @Column({ type:'datetime',name:'REQ_NEW_DATE',comment:'发布时间'})
-    releaseTime:Date
+    @Column({ type: 'datetime', name: 'REQ_NEW_DATE', comment: '发布时间' })
+    releaseTime: Date
+    @Column({ type: 'nchar', name: 'ad_remark', comment: '房评备注' })
+    remark: string
 }
