@@ -13,7 +13,7 @@ export class FyRes {
     /**
      * 发布时间
      */
-    releaseTime: string;
+    releaseTime: Date;
     /**
      * 出售单价
      */
@@ -27,10 +27,6 @@ export class FyRes {
      */
     reqAmt3?: number;
     /**
-     * 房源id
-     */
-    reqHusId: number;
-    /**
      * 出售信息id
      */
     reqId: string;
@@ -42,10 +38,6 @@ export class FyRes {
      * 房源类型
      */
     reqType: number;
-    /**
-     * 分享码
-     */
-    sharingCode: string;
 
     /**
   * 房评备注
@@ -57,10 +49,14 @@ export class FyRes {
     houseInfo: HouseRes;
 
     constructor(fy: Fy, agent: Agent, house: House, extra: HouseExtra) {
-        const attrs = Object.keys(fy)
-        attrs.forEach(attr => {
-            this[attr] = fy[attr]
-        })
+        this.releaseTime=fy.releaseTime;
+        this.reqId=fy.reqId;
+        this.reqStatus=fy.reqStatus;
+        this.reqType=fy.reqType;
+        this.adRemark=fy.remark;
+        this.reqAmt=fy.reqAmt;
+        this.reqAmt2=fy.reqAmt2;
+        this.reqAmt3=fy.reqAmt3;
         this.agentInfo = new AgentRes(agent);
         this.houseInfo = new HouseRes(house, extra);
     }
