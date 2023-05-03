@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Fy } from '../../lib/entity/meta/fy';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { FyRes } from 'lib/entity/response/fyRes';
 import { House } from 'lib/entity/meta/house';
 import { Agent } from 'lib/entity/meta/agent';
 import { HouseExtra, PictureRes } from 'lib/entity/response/houseRes';
-import { HouseConstruction, HouseFitment, HouseType } from 'lib/entity/dic/house';
+import { HouseConstruction, HouseFeature, HouseFitment, HouseInnerPlant, HouseType } from 'lib/entity/dic/house';
 import { Picture } from 'lib/entity/meta/picture';
 
 @Injectable()
@@ -32,6 +32,12 @@ export class FyService {
 
         @InjectRepository(Picture)
         private readonly pictureRepository: Repository<Picture>,
+
+        @InjectRepository(HouseFeature)
+        private readonly houseFeatureRepository: Repository<HouseFeature>,
+
+        @InjectRepository(HouseInnerPlant)
+        private readonly houseInnerPlantRepository: Repository<HouseInnerPlant>,
     ) { }
 
 
@@ -70,13 +76,16 @@ export class FyService {
 
         //房源用途
         extra.houseUsage = (await this.houseTypeRepository.find({ where: { typeId: houseInfo.houseUsageCode } }))[0].type;
-        const result = new FyRes(reqInfo, agentInfo, houseInfo, extra)
-        return result;
 
         //方向
 
         //内部设施
-
+        const innerPlantCodeList = JSON.parse('[' + houseInfo.houseInnerPlantCode + ']').map((i: number) => String(i))
+        extra.houseInnerPlant = (await this.houseInnerPlantRepository.find({ where: { plantId: In(innerPlantCodeList), type: 87 } }))
+            .map(i => { return { code: i.plantId, name: i.plant } })
         //房源特色
+
+        const result = new FyRes(reqInfo, agentInfo, houseInfo, extra)
+        return result;
     }
 }

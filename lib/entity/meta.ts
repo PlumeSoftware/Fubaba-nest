@@ -1,6 +1,6 @@
 import { Agent } from "../entity/meta/agent";
-import {Fy} from "../entity/meta/fy";
-import { HouseConstruction, HouseExpose, HouseFitment, HouseType, HouseUsage } from "./dic/house";
+import { Fy } from "../entity/meta/fy";
+import { HouseConstruction, HouseExpose, HouseFeature, HouseFitment, HouseInnerPlant, HouseType, HouseUsage } from "./dic/house";
 import { HouseBlock, HouseUrban } from "./meta/geography";
 import { House } from "./meta/house";
 import { Picture, PictureVr } from "./meta/picture";
@@ -18,4 +18,6 @@ export const entities = [
    HouseUsage,
    HouseFitment,
    HouseExpose,
+   HouseInnerPlant,
+   HouseFeature
 ]
