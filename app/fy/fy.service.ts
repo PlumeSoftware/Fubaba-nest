@@ -8,6 +8,7 @@ import { Agent } from 'lib/entity/meta/agent';
 import { HouseExtra, PictureRes } from 'lib/entity/response/houseRes';
 import { HouseConstruction, HouseFeature, HouseFitment, HouseInnerPlant, HouseType } from 'lib/entity/dic/house';
 import { Picture } from 'lib/entity/meta/picture';
+import { HouseExpose } from 'lib/entity/dic/house';
 
 @Injectable()
 export class FyService {
@@ -38,6 +39,9 @@ export class FyService {
 
         @InjectRepository(HouseInnerPlant)
         private readonly houseInnerPlantRepository: Repository<HouseInnerPlant>,
+
+        @InjectRepository(HouseExpose)
+        private readonly houseExposeRepository: Repository<HouseExpose>,
     ) { }
 
 
@@ -78,12 +82,22 @@ export class FyService {
         extra.houseUsage = (await this.houseTypeRepository.find({ where: { typeId: houseInfo.houseUsageCode } }))[0].type;
 
         //方向
+        extra.houseExpose = (await this.houseExposeRepository.find({ where: { exposeId: houseInfo.houseExposeCode } }))[0].expose
 
         //内部设施
         const innerPlantCodeList = JSON.parse('[' + houseInfo.houseInnerPlantCode + ']').map((i: number) => String(i))
         extra.houseInnerPlant = (await this.houseInnerPlantRepository.find({ where: { plantId: In(innerPlantCodeList), type: 87 } }))
             .map(i => { return { code: i.plantId, name: i.plant } })
+
         //房源特色
+        const featureCodeList = houseInfo.houseFeatureCode.split(",").map(i => i.replace(" ", ""))
+        extra.houseFeature = (await this.houseFeatureRepository.find({ where: { featureId: In(featureCodeList) } }))
+            .map(i => {
+                while (i.featureId.indexOf(' ') != -1) {
+                    i.featureId = i.featureId.replace(' ', '');
+                }
+                return { code: i.featureId, name: i.feature }
+            })
 
         const result = new FyRes(reqInfo, agentInfo, houseInfo, extra)
         return result;

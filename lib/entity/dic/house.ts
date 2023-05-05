@@ -47,8 +47,6 @@ export class HouseFitment extends BaseEntity {
 export class HouseExpose extends BaseEntity {
     @PrimaryColumn({ type: 'smallint', name: 'HERP_EXPOSE', comment: '朝向id' })
     exposeId: number
-    @Column({ type: 'int', name: 'chaoxiang_no', comment: '朝向' })
-    exposeNo: number
     @Column({ type: 'varchar', name: 'chaoxiang', comment: '朝向名称' })
     expose: string
 }
@@ -71,7 +69,6 @@ export class HouseInnerPlant extends BaseEntity {
 export class HouseFeature extends BaseEntity {
     @PrimaryColumn({ type: 'int', name: 'id', comment: '字典id' })
     dicId: number
-    @PrimaryColumn({})
     @Column({ type: 'varchar', name: 'type', comment: '特色id' })
     featureId: string
     @Column({ type: 'varchar', name: 'type_name', comment: '特色名称' })
