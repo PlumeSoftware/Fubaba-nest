@@ -1,25 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Fy } from '../../lib/entity/meta/fy';
 import { In, Repository } from 'typeorm';
 import { FyRes } from 'lib/entity/response/fyRes';
 import { House } from 'lib/entity/meta/house';
-import { Agent } from 'lib/entity/meta/agent';
 import { HouseExtra, PictureRes } from 'lib/entity/response/houseRes';
 import { HouseConstruction, HouseFeature, HouseFitment, HouseInnerPlant, HouseType } from 'lib/entity/dic/house';
 import { Picture } from 'lib/entity/meta/picture';
+import { Cache } from 'cache-manager';
+import { AgentService } from 'app/agent/agent.service';
 
 @Injectable()
 export class FyService {
     constructor(
+        private readonly agentService: AgentService,
+        
+        @Inject(CACHE_MANAGER)
+        private readonly cacheManager: Cache,
+
         @InjectRepository(Fy)
         private readonly fyRepository: Repository<Fy>,
 
         @InjectRepository(House)
         private readonly houseRepository: Repository<House>,
-
-        @InjectRepository(Agent)
-        private readonly agentRepository: Repository<Agent>,
 
         @InjectRepository(HouseConstruction)
         private readonly houseConstructionRepository: Repository<HouseConstruction>,
@@ -55,7 +58,7 @@ export class FyService {
     public async getFyInfoById(reqId: string): Promise<FyRes> {
         const reqInfo = (await this.fyRepository.find({ where: { reqId: reqId } }))[0];
         const houseInfo = (await this.houseRepository.find({ where: { houseId: reqInfo.reqHusId } }))[0]
-        const agentInfo = (await this.agentRepository.find({ where: { agentId: reqInfo.agentId } }))[0]
+        const agentInfo = await this.agentService.getAgentInfoById(reqInfo.agentId)
 
         let extra: HouseExtra = {
             houseFitment: '',
