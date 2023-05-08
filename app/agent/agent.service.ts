@@ -16,12 +16,12 @@ export class AgentService {
         return await this.agentRepository.find();
     }
 
-    public async getAgentInfoById(agentId: number): Promise<AgentRes> {
-        const targetAgent: Agent = await this.agentRepository.findOne({ where: { agentId: agentId } });
+    public async getAgentInfoById(agentId: number): Promise<Agent> {
+        const targetAgent: Agent = (await this.agentRepository.find({ where: { agentId: agentId }}))[0];
         // 去除空格
         while (targetAgent.agentTel.indexOf(' ') != -1) {
             targetAgent.agentTel = targetAgent.agentTel.replace(' ', '');
         }
-        return new AgentRes(targetAgent)
+        return targetAgent
     }
 }
