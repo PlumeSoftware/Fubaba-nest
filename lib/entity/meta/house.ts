@@ -1,4 +1,4 @@
-import { Entity, Column, BaseEntity, PrimaryColumn, Generated } from "typeorm"
+import { Entity, Column, BaseEntity, PrimaryColumn, Generated, AfterLoad } from "typeorm"
 
 @Entity({ name: "FY_HOUSE" })
 export class House extends BaseEntity {
@@ -39,5 +39,14 @@ export class House extends BaseEntity {
     @Column({ type: 'varchar', name: 't2', comment: '房源内部设施，逗号分割' })
     houseInnerPlantCode: string
 
+    @AfterLoad()
+    trim() {
+        if (this.houseFeatureCode) {
+            this.houseFeatureCode = this.houseFeatureCode.replaceAll(' ', '');
+        }
+        if (this.houseInnerPlantCode) {
+            this.houseInnerPlantCode = this.houseInnerPlantCode.replaceAll(' ', '');
+        }
+    }
 }
 
