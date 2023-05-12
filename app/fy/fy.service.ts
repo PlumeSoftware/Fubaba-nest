@@ -11,6 +11,7 @@ import { Cache } from 'cache-manager';
 import { AgentService } from 'app/agent/agent.service';
 import { FyInfoReq } from 'lib/entity/request/fyReq';
 
+
 @Injectable()
 export class FyService {
     constructor(
@@ -54,6 +55,7 @@ export class FyService {
             console.log('------------------');
             console.log('InitData start and it could be used now');
         }, 300)
+
 
         this.initDataCache();
         this.initDictCache();
@@ -293,6 +295,7 @@ export class FyService {
                 });
             }
         }));
+
 
         const result: FyRes[] = [];
         const fyResList = await this.cacheManager.get<FyRes[]>('fyResList');
