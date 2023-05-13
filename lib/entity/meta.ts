@@ -4,6 +4,7 @@ import { HouseConstruction, HouseExpose, HouseFeature, HouseFitment, HouseInnerP
 import { HouseBlock, HouseUrban } from "./meta/geography";
 import { House } from "./meta/house";
 import { Picture, PictureVr } from "./meta/picture";
+import { FubabaUser } from "./meta/user";
 
 export const entities = [
    Agent,

@@ -6,7 +6,7 @@ import { entities } from 'lib/entity/meta';
 import { AgentModule } from 'app/agent/agent.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature(entities),
+  imports: [TypeOrmModule.forFeature(entities, "fbb"),
     CacheModule.register(),
     AgentModule
   ],

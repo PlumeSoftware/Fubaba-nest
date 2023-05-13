@@ -1,6 +1,6 @@
 import { Entity, Column, BaseEntity, PrimaryColumn, Generated } from "typeorm"
 
-@Entity({ name: "log" })//访问以及操作日志
+@Entity({ database: "fbb", name: "log" })//访问以及操作日志
 export class Log extends BaseEntity {
     @PrimaryColumn({ type: 'int', name: "log_id" })//主键注解
     @Generated('increment')
@@ -9,7 +9,7 @@ export class Log extends BaseEntity {
     @Column({ type: 'datetime', name: 'create_time', })
     createtime: Date
 
-    @Column({ type: 'varchar', name: 'create_by', comment: '用户openid或者管理员的sysid', nullable: true  })
+    @Column({ type: 'varchar', name: 'create_by', comment: '用户openid或者管理员的sysid', nullable: true })
     createby: string
 
     @Column({ type: 'varchar', name: 'method', length: 6 })

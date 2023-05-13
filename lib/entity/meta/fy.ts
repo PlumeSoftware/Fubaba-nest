@@ -1,6 +1,6 @@
 import { Entity, Column, BaseEntity, PrimaryColumn, Generated } from "typeorm"
 
-@Entity({ name: "FY_REQOUT" })
+@Entity({ database: "fbb", name: "FY_REQOUT" })
 export class Fy extends BaseEntity {
     @PrimaryColumn({ type: 'varchar', name: 'REQ_ID', comment: '主键，查询唯一id' })
     reqId: string

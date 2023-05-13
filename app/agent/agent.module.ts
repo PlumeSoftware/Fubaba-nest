@@ -5,7 +5,7 @@ import { AgentController } from './agent.controller';
 import { AgentService } from './agent.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature(entities)],
+  imports: [TypeOrmModule.forFeature(entities, "fbb")],
   controllers: [AgentController],
   providers: [AgentService],
   exports: [AgentService]

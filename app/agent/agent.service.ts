@@ -7,7 +7,7 @@ import { Agent } from '../../lib/entity/meta/agent';
 @Injectable()
 export class AgentService {
     constructor(
-        @InjectRepository(Agent)
+        @InjectRepository(Agent, "fbb")
         private readonly agentRepository: Repository<Agent>,
     ) { }
     //获取经纪人    
