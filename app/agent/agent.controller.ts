@@ -15,6 +15,6 @@ export class AgentController {
     }
     @Get('/getAgentInfoById')
     public async getAgentInfoById(@Param('id') agentId: number): Promise<AgentRes> {
-        return await this.agentService.getAgentInfoById(agentId);
+        return new AgentRes(await this.agentService.getAgentInfoById(agentId));
     }
 }

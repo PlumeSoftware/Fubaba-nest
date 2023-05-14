@@ -1,4 +1,4 @@
-import { Entity, Column, BaseEntity, PrimaryColumn } from "typeorm"
+import { Entity, Column, BaseEntity, PrimaryColumn, AfterLoad } from "typeorm"
 
 @Entity({ name: "FY_JIEGOU" })
 export class HouseConstruction extends BaseEntity {
@@ -56,8 +56,8 @@ export class HouseExpose extends BaseEntity {
 export class HouseInnerPlant extends BaseEntity {
     @PrimaryColumn({ type: 'numeric', name: 'PUBLIC_DETAIL_ID', comment: '字典id' })
     dicId: string
-    @Column({ type: 'varchar', name: 'PUBLIC_ID', comment: '字典类型，87' })
-    type: 87
+    @Column({ type: 'varchar', name: 'PUBLIC_ID', comment: '字典类型，88' })
+    type: 88
     @Column({ type: 'varchar', name: 'PUBLIC_DETAIL_CODE', comment: '设施id' })
     plantId: string
     @Column({ type: 'varchar', name: 'PUBLIC_DETAIL_NAME', comment: '设施名称' })
@@ -73,6 +73,10 @@ export class HouseFeature extends BaseEntity {
     featureId: string
     @Column({ type: 'varchar', name: 'type_name', comment: '特色名称' })
     feature: string
+    @AfterLoad()
+    trim() {
+        this.featureId = this.featureId.replaceAll(' ', '');
+    }
 }
 
 

@@ -21,18 +21,19 @@ export class HouseRes {
     houseFitment: string;
     houseHalls: number;
     houseId: number;
+    houseMemo: string;
+    houseName: string;
+    houseRooms: number;
+    houseKitchens: number;
+    houseToilets: number;
+    houseTotalFloor: number;
+    houseUsage: string;
     houseInFloor: number;
     /**
      * 房源已安装设施
      */
     houseInnerPlant: HouseInnerPlant[];
-    houseKitchens: number;
-    houseMemo: string;
-    houseName: string;
-    houseRooms: number;
-    houseToilets: number;
-    houseTotalFloor: number;
-    houseUsage: string;
+
     /**
      * 房源图片列表
      */
@@ -115,7 +116,7 @@ export class PictureRes {
     constructor(picture: Picture) {
         this.picId = picture.picId;
         this.picturePath = picture.picPath;
-        this.picType = picture.picType;
+        this.picType = Number(picture.picType);
     }
 }
 

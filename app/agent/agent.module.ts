@@ -8,5 +8,6 @@ import { AgentService } from './agent.service';
   imports: [TypeOrmModule.forFeature(entities)],
   controllers: [AgentController],
   providers: [AgentService],
+  exports: [AgentService]
 })
 export class AgentModule { }

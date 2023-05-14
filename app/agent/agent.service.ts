@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AgentRes } from 'lib/entity/response/agentRes';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Agent } from '../../lib/entity/meta/agent';
 
 @Injectable()
@@ -10,18 +10,14 @@ export class AgentService {
         @InjectRepository(Agent)
         private readonly agentRepository: Repository<Agent>,
     ) { }
-
-    //获取所有经纪人    
-    public async getAgentList(): Promise<Agent[]> {
-        return await this.agentRepository.find();
+    //获取经纪人    
+    public async getAgentList(agentIdList: Array<number> = []): Promise<Agent[]> {
+        return await this.agentRepository.find({ where: { agentId: In(agentIdList) } });
     }
 
-    public async getAgentInfoById(agentId: number): Promise<AgentRes> {
-        const targetAgent: Agent = await this.agentRepository.findOne({ where: { agentId: agentId } });
-        // 去除空格
-        while (targetAgent.agentTel.indexOf(' ') != -1) {
-            targetAgent.agentTel = targetAgent.agentTel.replace(' ', '');
-        }
-        return new AgentRes(targetAgent)
+    public async getAgentInfoById(agentId: number): Promise<Agent> {
+        const targetAgent: Agent = (await this.agentRepository.find({ where: { agentId: agentId } }))[0];
+        targetAgent.agentTel = targetAgent.agentTel;
+        return targetAgent
     }
 }
