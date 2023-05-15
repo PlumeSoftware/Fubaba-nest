@@ -95,7 +95,27 @@ const configService = new ConfigService();
     TypeOrmModule.forFeature([FubabaUser], "fbb_cp"),
 
     // 部分模块全局使用，故全局导入orm_meta文件
-    TypeOrmModule.forFeature(entities),
+    TypeOrmModule.forFeature(entities, "fbb"),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule, UserModule],
+      name: configService.get('SQL_USER_USER'),
+      useFactory: () => ({
+        type: 'mssql',
+        host: configService.get('SQL_HOST'),
+        port: Number(configService.get('SQL_PORT')),
+        username: configService.get('SQL_USER_USER'),
+        password: configService.get('SQL_USER_PASS'),
+        database: configService.get('SQL_DB_USER'),
+        entities: [FubabaUser],
+        options: {
+          encrypt: false,
+          trustServerCertificate: true,
+        },
+        synchronize: false,
+      }),
+      inject: [ConfigService],
+    }),
+    TypeOrmModule.forFeature([FubabaUser], configService.get('SQL_USER_USER')),
   ],
   providers: [
     //接口鉴权、日志管理和邮件功能需要全局使用

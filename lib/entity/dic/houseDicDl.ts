@@ -1,4 +1,5 @@
 import { Entity, Column, BaseEntity, PrimaryColumn, AfterLoad } from "typeorm"
+import { ConfigService } from '@nestjs/config';
 
 @Entity({ database: "fmj", name: "FY_JIEGOU" })
 export class HouseConstruction extends BaseEntity {
