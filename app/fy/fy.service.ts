@@ -23,31 +23,31 @@ export class FyService {
         @InjectRepository(Fy, "fmj")
         private readonly fyRepository: Repository<Fy>,
 
-        @InjectRepository(House, "fmj", "fbb")
+        @InjectRepository(House, "fmj")
         private readonly houseRepository: Repository<House>,
 
-        @InjectRepository(HouseConstruction, "fmj", "fbb")
+        @InjectRepository(HouseConstruction, "fmj")
         private readonly houseConstructionRepository: Repository<HouseConstruction>,
 
-        @InjectRepository(HouseFitment, "fmj", "fbb")
+        @InjectRepository(HouseFitment, "fmj")
         private readonly houseFitmentRepository: Repository<HouseFitment>,
 
-        @InjectRepository(HouseType, "fmj", "fbb")
+        @InjectRepository(HouseType, "fmj")
         private readonly houseTypeRepository: Repository<HouseType>,
 
-        @InjectRepository(HouseUsage, "fmj", "fbb")
+        @InjectRepository(HouseUsage, "fmj")
         private readonly houseUsageRepository: Repository<HouseUsage>,
 
-        @InjectRepository(HouseExpose, "fmj", "fbb")
+        @InjectRepository(HouseExpose, "fmj")
         private readonly houseExposeRepository: Repository<HouseExpose>,
 
-        @InjectRepository(Picture, "fmj", "fbb")
+        @InjectRepository(Picture, "fmj")
         private readonly pictureRepository: Repository<Picture>,
 
-        @InjectRepository(HouseFeature, "fmj", "fbb")
+        @InjectRepository(HouseFeature, "fmj")
         private readonly houseFeatureRepository: Repository<HouseFeature>,
 
-        @InjectRepository(HouseInnerPlant, "fmj", "fbb")
+        @InjectRepository(HouseInnerPlant, "fmj")
         private readonly houseInnerPlantRepository: Repository<HouseInnerPlant>,
     ) {
         // 初始化缓存，在一启动就生效
@@ -55,7 +55,6 @@ export class FyService {
         //     console.log('------------------');
         //     console.log('InitData start and it could be used now');
         // }, 300)
-
 
         this.initDataCache();
         this.initDictCache();
@@ -280,7 +279,6 @@ export class FyService {
 
 
     public async getFyInfo(page: number = 0, filter: FyInfoReq, sort: string): Promise<FyRes[]> {
-        console.log(page)
         //js filter
         //相同字段的筛选为或关系，不同字段的筛选为与关系
         const houseFilter: any = {}

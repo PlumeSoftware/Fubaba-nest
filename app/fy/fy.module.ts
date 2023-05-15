@@ -11,7 +11,6 @@ import { entities as enZh } from '../../lib/entity/metaZh';
   imports: [
     TypeOrmModule.forFeature(enDl, "fmj"),
     TypeOrmModule.forFeature(enZh, "zh_erp"),
-  imports: [TypeOrmModule.forFeature(entities, "fbb"),
     CacheModule.register(),
     AgentModule,
     UserModule

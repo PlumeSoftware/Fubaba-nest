@@ -48,6 +48,8 @@ export class HouseFitment extends BaseEntity {
 export class HouseExpose extends BaseEntity {
     @PrimaryColumn({ type: 'smallint', name: 'HERP_EXPOSE', comment: '朝向id' })
     exposeId: number
+    @Column({ type: 'int', name: 'chaoxiang_no', comment: '朝向' })
+    exposeNo: number
     @Column({ type: 'varchar', name: 'chaoxiang', comment: '朝向名称' })
     expose: string
 }

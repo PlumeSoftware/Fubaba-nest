@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -7,7 +7,7 @@ export class UserController {
         private readonly userService: UserService,
     ) { }
     @Get('login')
-    public async login(@Param() code: string): Promise<any> {
-        this.userService.login(code);
+    public async login(@Query() query: { code: string }): Promise<any> {
+        return this.userService.login(query.code);
     }
 }
