@@ -1,6 +1,6 @@
-import { Agent } from "../meta/agent";
-import { Fy } from "../meta/fy";
-import { House } from "../meta/house";
+import { Agent } from "../meta_dl/agent";
+import { Fy } from "../meta_dl/fy";
+import { House } from "../meta_dl/house";
 import { AgentRes } from "./agentRes";
 import { HouseExtra, HouseRes } from "./houseRes";
 

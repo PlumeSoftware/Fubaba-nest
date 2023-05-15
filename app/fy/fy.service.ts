@@ -1,12 +1,12 @@
 import {  CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Fy } from '../../lib/entity/meta/fy';
+import { Fy } from '../../lib/entity/meta_dl/fy';
 import { Equal, In, Repository } from 'typeorm';
 import { FyRes } from 'lib/entity/response/fyRes';
-import { House } from 'lib/entity/meta/house';
+import { House } from 'lib/entity/meta_dl/house';
 import { HouseExtra, PictureRes, HouseFeature as HouseFeatureSet, HouseInnerPlant as HouseInnerPlantSet } from 'lib/entity/response/houseRes';
-import { HouseConstruction, HouseExpose, HouseFeature, HouseFitment, HouseInnerPlant, HouseType, HouseUsage } from 'lib/entity/dic/house';
-import { Picture } from 'lib/entity/meta/picture';
+import { HouseConstruction, HouseExpose, HouseFeature, HouseFitment, HouseInnerPlant, HouseType, HouseUsage } from 'lib/entity/dic/houseDicDl';
+import { Picture } from 'lib/entity/meta_dl/picture';
 import { Cache } from 'cache-manager';
 import { AgentService } from 'app/agent/agent.service';
 import { FyInfoReq } from 'lib/entity/request/fyReq';
@@ -20,41 +20,41 @@ export class FyService {
         @Inject(CACHE_MANAGER)
         private cacheManager: Cache,
 
-        @InjectRepository(Fy)
+        @InjectRepository(Fy, "fmj")
         private readonly fyRepository: Repository<Fy>,
 
-        @InjectRepository(House)
+        @InjectRepository(House, "fmj")
         private readonly houseRepository: Repository<House>,
 
-        @InjectRepository(HouseConstruction)
+        @InjectRepository(HouseConstruction, "fmj")
         private readonly houseConstructionRepository: Repository<HouseConstruction>,
 
-        @InjectRepository(HouseFitment)
+        @InjectRepository(HouseFitment, "fmj")
         private readonly houseFitmentRepository: Repository<HouseFitment>,
 
-        @InjectRepository(HouseType)
+        @InjectRepository(HouseType, "fmj")
         private readonly houseTypeRepository: Repository<HouseType>,
 
-        @InjectRepository(HouseUsage)
+        @InjectRepository(HouseUsage, "fmj")
         private readonly houseUsageRepository: Repository<HouseUsage>,
 
-        @InjectRepository(HouseExpose)
+        @InjectRepository(HouseExpose, "fmj")
         private readonly houseExposeRepository: Repository<HouseExpose>,
 
-        @InjectRepository(Picture)
+        @InjectRepository(Picture, "fmj")
         private readonly pictureRepository: Repository<Picture>,
 
-        @InjectRepository(HouseFeature)
+        @InjectRepository(HouseFeature, "fmj")
         private readonly houseFeatureRepository: Repository<HouseFeature>,
 
-        @InjectRepository(HouseInnerPlant)
+        @InjectRepository(HouseInnerPlant, "fmj")
         private readonly houseInnerPlantRepository: Repository<HouseInnerPlant>,
     ) {
         // 初始化缓存，在一启动就生效
-        setTimeout(() => {
-            console.log('------------------');
-            console.log('InitData start and it could be used now');
-        }, 300)
+        // setTimeout(() => {
+        //     console.log('------------------');
+        //     console.log('InitData start and it could be used now');
+        // }, 300)
 
 
         this.initDataCache();
@@ -80,7 +80,7 @@ export class FyService {
 
         const fyResList = [];
 
-        process.stdout.write(`Load ${Math.ceil(fyList.length / maxQueryItem)} + need: `);
+        // process.stdout.write(`Load ${Math.ceil(fyList.length / maxQueryItem)} + need: `);
 
         for (let i = 0; i < fyList.length; i += maxQueryItem) {
             const queryHouse = fyList.slice(i, i + maxQueryItem).map(i => i.reqHusId);
@@ -110,11 +110,11 @@ export class FyService {
             fyResList.push(...r);
             this.cacheManager.set('fyResList', fyResList, ttl);
 
-            process.stdout.write(`+`);
+            // process.stdout.write(`+`);
         }
 
-        console.log("\nInitData finished, total: " + fyResList.length);
-        console.log('------------------');
+        // console.log("\nInitData finished, total: " + fyResList.length);
+        // console.log('------------------');
     }
 
     private async initDictCache() {
@@ -268,15 +268,19 @@ export class FyService {
 
     public async getFyInfoById(reqId: string): Promise<FyRes> {
         //房源基础信息
-        const fyInfo = (await this.fyRepository.find({ where: { reqId: reqId } }))[0];
-        const houseInfo = (await this.houseRepository.find({ where: { houseId: fyInfo.reqHusId } }))[0];
-        const agentInfo = await this.agentService.getAgentList([fyInfo.agentId])[0];
-        const pictureList = await this.pictureRepository.find({ where: { houseId: houseInfo.houseId } });
+        try {
+            const fyInfo = (await this.fyRepository.find({ where: { reqId: reqId } }))[0];
+            const houseInfo = (await this.houseRepository.find({ where: { houseId: fyInfo.reqHusId } }))[0];
+            const agentInfo = await this.agentService.getAgentList([fyInfo.agentId])[0];
+            const pictureList = await this.pictureRepository.find({ where: { houseId: houseInfo.houseId } });
 
-        //房源额外信息
-        const extra = await this.assembleExtra(houseInfo, pictureList);
+            //房源额外信息
+            const extra = await this.assembleExtra(houseInfo, pictureList);
 
-        return new FyRes(fyInfo, houseInfo, agentInfo, extra);
+            return new FyRes(fyInfo, houseInfo, agentInfo, extra);
+        } catch (e) {
+            return null;
+        }
     }
 
 
@@ -287,12 +291,42 @@ export class FyService {
 
         await Promise.all(Object.keys(filter).map(async (key) => {
             if (filter[key]) {
-                //找到需要筛选的字段
-                filter[key].split(',').forEach(async (value: string | number) => {
-                    //将筛选值转化为筛选器
-                    if (!houseFilter[key]) houseFilter[key] = [];
-                    houseFilter[key].push(await this.filter2Where(key, value));
-                });
+                switch (key) {
+                    case "price": {
+                        const priceList = filter[key].split(',').map(i => Number(i));
+                        if (!houseFilter[key]) houseFilter[key] = [];
+                        if (priceList.length == 2 && priceList.every(i => !isNaN(i))) {
+                            console.log("here")
+                            houseFilter[key].push(function (fy: FyRes) { return fy.reqAmt >= Number(priceList[0]) && fy.reqAmt <= Number(priceList[1]) })
+                        } else {
+                            filter[key].split(',').forEach(async (value: string | number) => {
+                                houseFilter[key].push(await this.filter2Where(key, value));
+                            })
+                        }
+                        break;
+                    }
+                    case "sort": {
+                        const sortMethod = filter[key];
+                        switch (sortMethod) {
+                            case "TN": fyResList.sort((a, b) => b.releaseTime?.getTime() - a.releaseTime?.getTime()); break;
+                            case "PA": fyResList.sort((a, b) => a.reqAmt - b.reqAmt); break;
+                            case "PD": fyResList.sort((a, b) => b.reqAmt - a.reqAmt); break;
+                            case "AA": fyResList.sort((a, b) => a.houseInfo?.houseArea - b.houseInfo?.houseArea); break;
+                            case "AD": fyResList.sort((a, b) => b.houseInfo?.houseArea - a.houseInfo?.houseArea); break;
+                        }
+                        break;
+                    }
+                    case "page": { break; }
+                    default: {
+                        //找到需要筛选的字段
+                        filter[key].split(',').forEach(async (value: string | number) => {
+                            //将筛选值转化为筛选器
+                            if (!houseFilter[key]) houseFilter[key] = [];
+                            houseFilter[key].push(await this.filter2Where(key, value));
+                        })
+                    }
+                }
+
             }
         }));
 

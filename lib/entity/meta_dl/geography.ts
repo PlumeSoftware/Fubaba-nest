@@ -1,6 +1,6 @@
 import { Entity, Column, BaseEntity, PrimaryColumn, Generated } from "typeorm"
 
-@Entity({ name: "FY_CHENGQU" })
+@Entity({ database: "fmj", name: "FY_CHENGQU" })
 export class HouseUrban extends BaseEntity {
     @PrimaryColumn({type:'int',name:'id',comment:'城区id'})  
     urbanid: number
@@ -10,7 +10,7 @@ export class HouseUrban extends BaseEntity {
     urbanName: string
 }
 
-@Entity({ name: "FY_JIEQU" })
+@Entity({ database: "fmj", name: "FY_JIEQU" })
 export class HouseBlock extends BaseEntity {
     @PrimaryColumn({type:'int',name:'jiequ_no',comment:'街区id'})  
     blockId: number

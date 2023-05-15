@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MailService } from 'ops/mail/mail.service';
 import { Repository } from 'typeorm';
-import { Log } from '../../lib/entity/meta/log';
+import { Log } from '../../lib/entity/meta_dl/log';
 
 @Injectable()
 export class LogService {
