@@ -2,13 +2,18 @@ import { CacheModule, Module } from '@nestjs/common';
 import { FyController } from './fy.controller';
 import { FyService } from './fy.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { entities } from 'lib/entity/meta';
 import { AgentModule } from 'app/agent/agent.module';
+import { UserModule } from 'app/user/user.module';
+import { entities as enDl } from '../../lib/entity/metaDl';
+import { entities as enZh } from '../../lib/entity/metaZh';
 
 @Module({
-  imports: [TypeOrmModule.forFeature(entities),
+  imports: [
+    TypeOrmModule.forFeature(enDl, "fmj"),
+    TypeOrmModule.forFeature(enZh, "zh_erp"),
     CacheModule.register(),
-    AgentModule
+    AgentModule,
+    UserModule
   ],
   controllers: [FyController],
   providers: [FyService]

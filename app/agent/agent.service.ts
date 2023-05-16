@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AgentRes } from 'lib/entity/response/agentRes';
 import { In, Repository } from 'typeorm';
-import { Agent } from '../../lib/entity/meta/agent';
+import { Agent } from '../../lib/entity/meta_dl/agent';
 
 @Injectable()
 export class AgentService {
     constructor(
-        @InjectRepository(Agent)
+        @InjectRepository(Agent, "fmj")
         private readonly agentRepository: Repository<Agent>,
     ) { }
     //获取经纪人    

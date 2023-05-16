@@ -1,6 +1,6 @@
 import { Entity, Column, BaseEntity, PrimaryColumn, Generated, AfterLoad } from "typeorm"
 
-@Entity({ name: "SYS_USER" })
+@Entity({ database: "fmj", name: "SYS_USER" })
 export class Agent extends BaseEntity {
     @PrimaryColumn({ type: 'int', name: 'USER_ID', comment: '经纪人id' })
     agentId: number

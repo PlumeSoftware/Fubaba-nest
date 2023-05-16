@@ -1,6 +1,6 @@
 import { Entity, Column, BaseEntity, PrimaryColumn, Generated, AfterLoad } from "typeorm"
 
-@Entity({ name: "FY_PICTURE" })
+@Entity({ database: "zh_erp", name: "FY_PICTURE" })
 export class Picture extends BaseEntity {
     @PrimaryColumn({ type: 'int', name: 'pic_id', comment: '图片主键' })
     picId: number
@@ -14,7 +14,7 @@ export class Picture extends BaseEntity {
     uploadDate: Date
 }
 
-@Entity({ name: "FY_VR_PICTURE" })
+@Entity({ database: "zh_erp", name: "FY_VR_PICTURE" })
 export class PictureVr extends BaseEntity {
     @PrimaryColumn({ type: 'int', name: 'vr_id', comment: 'vr图片主键id' })
     picVrId: number

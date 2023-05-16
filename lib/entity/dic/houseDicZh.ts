@@ -1,6 +1,7 @@
 import { Entity, Column, BaseEntity, PrimaryColumn, AfterLoad } from "typeorm"
+import { ConfigService } from '@nestjs/config';
 
-@Entity({ name: "FY_JIEGOU" })
+@Entity({ database: "zh_erp", name: "FY_JIEGOU" })
 export class HouseConstruction extends BaseEntity {
     @PrimaryColumn({ type: 'int', name: 'id', comment: '结构id' })
     constructionId: number
@@ -10,7 +11,7 @@ export class HouseConstruction extends BaseEntity {
     construction: string
 }
 
-@Entity({ name: "FY_TYPE" })
+@Entity({ database: "zh_erp", name: "FY_TYPE" })
 export class HouseType extends BaseEntity {
     @PrimaryColumn({ type: 'int', name: 'id', comment: '类型id' })
     typeId: number
@@ -18,7 +19,7 @@ export class HouseType extends BaseEntity {
     type: string
 }
 
-@Entity({ name: "FY_YONGTU" })
+@Entity({ database: "zh_erp", name: "FY_YONGTU" })
 export class HouseUsage extends BaseEntity {
     @PrimaryColumn({ type: 'smallint', name: 'HERP_USAGE', comment: '用途id' })
     usageId: number
@@ -28,7 +29,7 @@ export class HouseUsage extends BaseEntity {
     usage: string
 }
 
-@Entity({ name: "FY_ZHUANGXIU" })
+@Entity({ database: "zh_erp", name: "FY_ZHUANGXIU" })
 export class HouseFitment extends BaseEntity {
     @PrimaryColumn({ type: 'smallint', name: 'HERP_FITMENT', comment: '装修id' })
     fitmentId: number
@@ -43,16 +44,18 @@ export class HouseFitment extends BaseEntity {
 
 // }
 
-@Entity({ name: "FY_CHAOXIANG" })
+@Entity({ database: "zh_erp", name: "FY_CHAOXIANG" })
 export class HouseExpose extends BaseEntity {
     @PrimaryColumn({ type: 'smallint', name: 'HERP_EXPOSE', comment: '朝向id' })
     exposeId: number
+    @Column({ type: 'int', name: 'chaoxiang_no', comment: '朝向' })
+    exposeNo: number
     @Column({ type: 'varchar', name: 'chaoxiang', comment: '朝向名称' })
     expose: string
 }
 
 //字典表 内部设施 字典类型87
-@Entity({ name: "SYS_PUBLIC_DETAIL" })
+@Entity({ database: "zh_erp", name: "SYS_PUBLIC_DETAIL" })
 export class HouseInnerPlant extends BaseEntity {
     @PrimaryColumn({ type: 'numeric', name: 'PUBLIC_DETAIL_ID', comment: '字典id' })
     dicId: string
@@ -65,7 +68,7 @@ export class HouseInnerPlant extends BaseEntity {
 }
 
 //字典表 房源特色
-@Entity({ name: "FENLEI_TYPE" })
+@Entity({ database: "zh_erp", name: "FENLEI_TYPE" })
 export class HouseFeature extends BaseEntity {
     @PrimaryColumn({ type: 'int', name: 'id', comment: '字典id' })
     dicId: number
@@ -75,7 +78,10 @@ export class HouseFeature extends BaseEntity {
     feature: string
     @AfterLoad()
     trim() {
-        this.featureId = this.featureId.replaceAll(' ', '');
+        if (this.featureId) {
+            this.featureId = this.featureId.replaceAll(' ', '');
+
+        }
     }
 }
 
