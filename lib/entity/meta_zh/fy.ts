@@ -1,4 +1,4 @@
-import { Entity, Column, BaseEntity, PrimaryColumn, Generated } from "typeorm"
+import { Entity, Column, BaseEntity, PrimaryColumn, Generated, AfterLoad } from "typeorm"
 
 @Entity({ database: "zh_erp", name: "FY_REQOUT" })
 export class Fy extends BaseEntity {
@@ -24,4 +24,11 @@ export class Fy extends BaseEntity {
     releaseTime: Date
     @Column({ type: 'nchar', name: 'ad_remark', comment: '房评备注' })
     remark: string
+
+    @AfterLoad()
+    trim() {
+        if (this.remark) {
+            this.remark = this.remark.replaceAll('  ', ' ');
+        }
+    }
 }

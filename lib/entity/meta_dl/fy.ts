@@ -1,4 +1,4 @@
-import { Entity, Column, BaseEntity, PrimaryColumn, Generated } from "typeorm"
+import { Entity, Column, BaseEntity, PrimaryColumn, Generated, AfterLoad } from "typeorm"
 
 @Entity({ database: "fmj", name: "FY_REQOUT" })
 export class Fy extends BaseEntity {
@@ -14,7 +14,7 @@ export class Fy extends BaseEntity {
     reqAmt2: number
     @Column({ type: 'varchar', name: 'REQ_EMP_CODE', comment: '经纪人id' })
     agentId: number
-    @Column({ type: 'int', name: 'REQ_STATUS', comment: '出售信息状态，0--可用' })
+    @Column({ type: 'int', name: 'REQ_STATUS', comment: '出售信息状态，1--可用' })
     reqStatus: number
     @Column({ type: 'money', name: 'REQ_AMT3', comment: '房源总价' })
     reqAmt3: number
@@ -24,4 +24,11 @@ export class Fy extends BaseEntity {
     releaseTime: Date
     @Column({ type: 'nchar', name: 'ad_remark', comment: '房评备注' })
     remark: string
+
+    @AfterLoad()
+    trim() {
+        if (this.remark) {
+            this.remark = this.remark.replaceAll(' ', '');
+        }
+    }
 }
