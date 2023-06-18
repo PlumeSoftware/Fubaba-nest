@@ -6,6 +6,7 @@ import { AgentModule } from 'app/agent/agent.module';
 import { UserModule } from 'app/user/user.module';
 import { entities as enDl } from '../../lib/entity/metaDl';
 import { entities as enZh } from '../../lib/entity/metaZh';
+import { FyRespository } from './fy.repository';
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { entities as enZh } from '../../lib/entity/metaZh';
     UserModule
   ],
   controllers: [FyController],
-  providers: [FyService]
+  providers: [FyService, FyRespository]
 })
 export class FyModule { }
