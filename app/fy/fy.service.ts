@@ -26,7 +26,7 @@ export class FyService {
         // 初始化缓存，在一启动就生效
         setTimeout(() => {
             console.log('------------------');
-            console.log('InitData start and it could be used now');
+            console.log('InitData start and it couldn\'t be used now');
         }, 300)
 
         this.initDataCache('zh');
@@ -238,6 +238,7 @@ export class FyService {
     public async getFyInfoById(reqId: string, city: string): Promise<FyRes> {
         //房源基础信息
         try {
+            console.log('getFyInfoById', reqId);
             const fyInfo = (await this.repository.find(city, Fy, { where: { reqId: reqId } }))[0];
             const houseInfo = (await this.repository.find(city, House, { where: { houseId: fyInfo.reqHusId } }))[0];
             const agentInfo = await this.agentService.getAgentInfoById(city, fyInfo.agentId);
