@@ -14,8 +14,17 @@ export class Agent extends BaseEntity {
     avatar: string
     @Column({ type: 'nvarchar', name: 'photo2', comment: '经纪人二维码' })
     agentQr: string
+    agentInnerTel: string
     @AfterLoad()
     trim() {
-        this.agentTel = this.agentTel?.replaceAll(' ', '');
+        const agentTel = this.agentTel?.replaceAll(' ', '').slice(0, 11);
+        const agentInnerTel = this.agentTel?.replaceAll(' ', '').slice(12, 16)
+
+        this.agentTel = agentTel
+        this.agentInnerTel = agentInnerTel
+        
+        if (this.agentInnerTel === '') {
+            this.agentInnerTel = null
+        }
     }
 }

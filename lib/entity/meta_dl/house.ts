@@ -47,6 +47,12 @@ export class House extends BaseEntity {
         if (this.houseInnerPlantCode) {
             this.houseInnerPlantCode = this.houseInnerPlantCode.replaceAll(' ', '');
         }
+        if (this.houseFitment) {
+            this.houseFitment = this.houseFitment.replaceAll(' ', '');
+        }
+        if (!this.houseMemo) {
+            this.houseMemo = ''
+        }
     }
 }
 
