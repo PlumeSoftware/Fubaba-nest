@@ -44,7 +44,7 @@ export class FyController {
     }
 
     @Get('getFyInfoById')
-    public async getFyInfoById(@Query('id') id: string, @Headers() header: { openid: string, city: string }): Promise<UsualRes<FyRes>> {
+    public async getFyInfoById(@Query('id') id: number, @Headers() header: { openid: string, city: string }): Promise<UsualRes<FyRes>> {
         const fyInfo = await this.fyService.getFyInfoById(id, header.city);
         if (!fyInfo) {
             return new UsualRes(-1, 'error: not exist id', null);

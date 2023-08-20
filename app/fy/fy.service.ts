@@ -42,9 +42,8 @@ export class FyService {
         const maxQueryItem = 2090;
 
         const fyList = [];
-        fyList.push(...(await this.repository.find(city, Fy, { where: { reqStatus: Equal(1) }, order: { releaseTime: "DESC" } })));
+        fyList.push(...(await this.repository.find(city, Fy, { where: { reqStatus: Equal(0) }, order: { reqId: "DESC" } })));
         this.cacheManager.set('fyList' + city, fyList, ttl);
-
         const houseList = [];
         const agentList = [];
         const pictureList = [];
@@ -56,17 +55,16 @@ export class FyService {
 
         for (let i = 0; i < fyList.length; i += maxQueryItem) {
             const queryHouse = fyList.slice(i, i + maxQueryItem).map(i => i.reqHusId);
-            //去除重复
+            const queryReq = fyList.slice(i, i + maxQueryItem).map(i => i.reqId);
             const agentIdList = fyList.slice(i, i + maxQueryItem).map(i => i.agentId).filter((value, index, self) => self.indexOf(value) === index);
 
-            const r1 = await this.repository.find('dl', House, { where: { houseId: In(queryHouse) } })
+            const r1 = await this.repository.find(city, House, { where: { houseId: In(queryHouse) } })
             houseList.push(...r1);
             this.cacheManager.set('houseList' + city, houseList, ttl);
 
             const r2 = await this.agentService.getAgentList(city, agentIdList)
             agentList.push(...r2);
             this.cacheManager.set('agentList' + city, agentList, ttl);
-
 
             const r3 = await this.repository.find('dl', Picture, { where: { houseId: In(queryHouse) } })
             pictureList.push(...r3);
@@ -235,7 +233,7 @@ export class FyService {
         }
     }
 
-    public async getFyInfoById(reqId: string, city: string): Promise<FyRes> {
+    public async getFyInfoById(reqId: number, city: string): Promise<FyRes> {
         //房源基础信息
         try {
             console.log('getFyInfoById', reqId);

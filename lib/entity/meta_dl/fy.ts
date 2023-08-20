@@ -3,7 +3,7 @@ import { Entity, Column, BaseEntity, PrimaryColumn, Generated, AfterLoad } from 
 @Entity({ database: "fmj", name: "FY_REQOUT" })
 export class Fy extends BaseEntity {
     @PrimaryColumn({ type: 'varchar', name: 'REQ_ID', comment: '主键，查询唯一id' })
-    reqId: string
+    reqId: number
     @Column({ type: 'int', name: 'REQ_TYPE', comment: '出售类型，1--二手房，0--租房' })
     reqType: number
     @Column({ type: 'int', name: 'REQ_HUS_ID', comment: '房源id，用于匹配房源信息' })

@@ -29,7 +29,7 @@ export class FyRes {
   /**
    * 出售信息id
    */
-  reqId: string;
+  reqId: number;
   /**
    * 信息状态
    */
