@@ -30,7 +30,7 @@ export class UserService {
     }
 
     public async getUserInfo(city: string, openid: string): Promise<UserInfoRes> {
-        const user = (await this.fubabaUserRepository.find({ where: { openId: openid } }))[0];
+        const user = (await this.fubabaUserRepository.find({ where: { openid } }))[0];
         return new UserInfoRes(user);
     }
 }

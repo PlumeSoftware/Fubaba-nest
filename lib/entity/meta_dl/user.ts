@@ -5,7 +5,9 @@ export class FubabaUser extends BaseEntity {
     @PrimaryColumn({ type: 'varchar', name: "fb_user_id" })//主键注解
     userId: string
     @Column({ type: 'varchar', name: 'wx_openid' })
-    openId: string
+    openid: string
+    @Column({ type: 'varchar', name: 'unionid' })
+    unionid: string
     @Column({ type: 'varchar', name: 'phone' })
     phone: string
     @Column({ type: 'varchar', name: 'agent_user_id', comment: '绑定的经纪人id' })
