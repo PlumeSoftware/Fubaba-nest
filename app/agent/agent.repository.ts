@@ -1,17 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Fy } from '../../lib/entity/meta_dl/fy';
-import { House } from 'lib/entity/meta_dl/house';
+import { Fy } from '../../lib/entity/common/fy';
+import { House } from 'lib/entity/common/house';
 import { Equal, FindManyOptions, FindOptionsWhere, In, Repository } from 'typeorm';
-import { Agent } from "lib/entity/meta_dl/agent";
+import { Agent } from "lib/entity/common/agent";
 
 @Injectable()
 export class AgentRepository {
     constructor(
         @InjectRepository(Agent, "fmj")
-        private readonly agentDlRepository: Repository<Agent>,
-        @InjectRepository(Agent, "zh_erp")
-        private readonly agentZhRepository: Repository<Agent>,
+        private readonly agentRepository: Repository<Agent>,
     ) { }
 
     //参数为字符串，允许的值为Object.keys(this)

@@ -1,17 +1,18 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Fy } from '../../lib/entity/meta_dl/fy';
+import { Fy } from '../../lib/entity/common/fy';
 import { Equal, In, Repository } from 'typeorm';
 import { FyRes } from 'lib/entity/response/fyRes';
-import { House } from 'lib/entity/meta_dl/house';
+import { House } from 'lib/entity/common/house';
 import { HouseExtra, PictureRes, HouseFeature as HouseFeatureSet, } from 'lib/entity/response/houseRes';
-import { HouseConstruction, HouseExpose, HouseFeature, HouseFitment, HouseInnerPlant, HouseType, HouseUsage } from 'lib/entity/dic/houseDicDl';
-import { Picture } from 'lib/entity/meta_dl/picture';
+import { HouseConstruction, HouseExpose, HouseFeature, HouseFitment, HouseInnerPlant, HouseType, HouseUsage } from 'lib/entity/dic/houseDict';
+import { Picture } from 'lib/entity/common/picture';
 import { Cache } from 'cache-manager';
 import { AgentService } from 'app/agent/agent.service';
 import { FyInfoReq } from 'lib/entity/request/fyReq';
 import { FyRespository } from './fy.repository';
 
+import * as fs from 'fs';
 
 @Injectable()
 
@@ -21,25 +22,28 @@ export class FyService {
         private readonly repository: FyRespository,
         @Inject(CACHE_MANAGER)
         private cacheManager: Cache,
-
     ) {
         // 初始化缓存，在一启动就生效
         setTimeout(() => {
             console.log('------------------');
-            console.log('InitData start and it couldn\'t be used now');
+            console.log('InitData starting...');
         }, 300)
 
-        this.initDataCache('zh');
-        this.initDictCache('zh');
+        this.initDictCache('dl');
+        this.initDataCache('dl');
 
         setInterval(() => {
-            this.initDataCache('zh');
+            this.initDataCache('dl');
         }, 1000 * 60 * 60)
     }
 
     private async initDataCache(city: string) {
         const ttl = 1000 * 60 * 60 * 24 * 365;
-        const maxQueryItem = 2090;
+        const maxQueryItem = 2000;
+
+        setTimeout(() => {
+            console.log('Completed!\n------------------');
+        }, 30000);
 
         const fyList = [];
         fyList.push(...(await this.repository.find(city, Fy, { where: { reqStatus: Equal(0) }, order: { reqId: "DESC" } })));
@@ -50,8 +54,6 @@ export class FyService {
 
 
         const fyResList = [];
-
-        process.stdout.write(`Load ${Math.ceil(fyList.length / maxQueryItem)} + need: `);
 
         for (let i = 0; i < fyList.length; i += maxQueryItem) {
             const queryHouse = fyList.slice(i, i + maxQueryItem).map(i => i.reqHusId);
@@ -79,12 +81,7 @@ export class FyService {
             }));
             fyResList.push(...r);
             this.cacheManager.set('fyResList' + city, fyResList, ttl);
-
-            process.stdout.write(`+`);
         }
-
-        console.log("\nInitData finished, total: " + fyResList.length);
-        console.log('------------------');
     }
 
     private async initDictCache(city: string) {
@@ -233,7 +230,7 @@ export class FyService {
         }
     }
 
-    public async getFyInfoById(reqId: number, city: string): Promise<FyRes> {
+    public async getFyInfoById(reqId: string, city: string): Promise<FyRes> {
         //房源基础信息
         try {
             console.log('getFyInfoById', reqId);

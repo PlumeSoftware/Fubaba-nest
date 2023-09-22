@@ -1,8 +1,5 @@
-import { Agent as AgentDL } from "../meta_dl/agent";
-import { Agent as AgentZH } from "../meta_zh/agent";
-import { FubabaUser } from "../meta_dl/user";
-
-type Agent = AgentDL | AgentZH;
+import { Agent } from "../common/agent";
+import { FubabaUser } from "../common/user";
 
 
 export interface WxAuthRes {
@@ -19,20 +16,22 @@ export class UserInfoRes {
     phone: string;
     token: string;
     agent_token?: string;
-    agent_info?: null | Agent;
-    bind_info?: null | Agent;
+    agentInfo?: null | Agent;
+    bindInfo?: null | Agent;
+
+    ban?: boolean;
 
     constructor(fubabaUser: FubabaUser, agentInfo?: Agent, bindInfo?: Agent) {
         this.openid = fubabaUser.openid;
-        if(fubabaUser.unionid) {
+        if (fubabaUser.unionid) {
             this.unionid = fubabaUser.unionid;
         }
         this.phone = fubabaUser?.phone || null;
         if (agentInfo) {
-            this.agent_info = agentInfo;
+            this.agentInfo = agentInfo;
         }
         if (bindInfo) {
-            this.bind_info = bindInfo;
+            this.bindInfo = bindInfo;
         }
     }
 }

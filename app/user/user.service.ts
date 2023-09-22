@@ -1,16 +1,18 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FubabaUser } from 'lib/entity/meta_dl/user';
+import { FubabaUser } from '../../lib/entity/common/user';
 import { Repository } from 'typeorm';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { UserInfoRes, WxAuthRes } from 'lib/entity/response/userRes';
+import { UserInfoRes, WxAuthRes } from '../../lib/entity/response/userRes';
 import { Cache } from 'cache-manager';
+import { AgentService } from '../agent/agent.service';
 @Injectable()
 export class UserService {
     constructor(
         private readonly httpService: HttpService,
         private readonly configService: ConfigService,
+        private readonly agentService: AgentService,
         @Inject(CACHE_MANAGER)
         private cacheManager: Cache,
         @InjectRepository(FubabaUser, 'fbb_cp')
@@ -31,6 +33,10 @@ export class UserService {
 
     public async getUserInfo(city: string, openid: string): Promise<UserInfoRes> {
         const user = (await this.fubabaUserRepository.find({ where: { openid } }))[0];
-        return new UserInfoRes(user);
+        let bindInfo = null;
+        if (user.agentId && user.agentCity) {
+            bindInfo = this.agentService.getAgentInfoById(city, user.agentId);
+        }
+        return new UserInfoRes(user, null, bindInfo);
     }
 }

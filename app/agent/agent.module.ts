@@ -3,14 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AgentController } from './agent.controller';
 import { AgentService } from './agent.service';
-import { entities as enDl } from '../../lib/entity/metaDl';
-import { entities as enZh } from '../../lib/entity/metaZh';
+import { entities } from '../../lib/entity/entites';
 import { AgentRepository } from './agent.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature(enDl, "fmj"),
-    TypeOrmModule.forFeature(enZh, "zh_erp"),
+    TypeOrmModule.forFeature(entities, "fmj"),
     CacheModule.register(),
   ],
   controllers: [AgentController],

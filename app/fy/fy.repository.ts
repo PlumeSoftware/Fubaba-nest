@@ -1,55 +1,34 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Fy } from '../../lib/entity/meta_dl/fy';
-import { House } from 'lib/entity/meta_dl/house';
+import { Fy} from '../../lib/entity/common/fy';
+import { House } from 'lib/entity/common/house';
 import { Equal, FindManyOptions, FindOptionsWhere, In, Repository } from 'typeorm';
-
-import { HouseConstruction, HouseExpose, HouseFeature, HouseFitment, HouseInnerPlant, HouseType, HouseUsage } from 'lib/entity/dic/houseDicDl';
-import { Picture } from "lib/entity/meta_dl/picture";
+import { HouseConstruction, HouseExpose, HouseFeature, HouseFitment, HouseInnerPlant, HouseType, HouseUsage } from 'lib/entity/dic/houseDict';
+import { Picture } from "lib/entity/common/picture";
 
 @Injectable()
 export class FyRespository {
     constructor(
         @InjectRepository(Fy, "fmj")
-        private readonly fyDlRepository: Repository<Fy>,
-        @InjectRepository(Fy, "zh_erp")
-        private readonly fyZhRepository: Repository<Fy>,
+        private readonly fyRepository: Repository<Fy>,
         @InjectRepository(House, "fmj")
-        private readonly houseDlRepository: Repository<House>,
-        @InjectRepository(House, "zh_erp")
-        private readonly houseZhRepository: Repository<House>,
+        private readonly houseRepository: Repository<House>,
         @InjectRepository(HouseConstruction, "fmj")
-        private readonly houseConstructionDlRepository: Repository<HouseConstruction>,
-        @InjectRepository(HouseConstruction, "zh_erp")
-        private readonly houseConstructionZhRepository: Repository<HouseConstruction>,
+        private readonly houseConstructionRepository: Repository<HouseConstruction>,
         @InjectRepository(HouseFitment, "fmj")
         private readonly houseFitmentRepository: Repository<HouseFitment>,
-        @InjectRepository(HouseFitment, "zh_erp")
-        private readonly houseFitmentZhRepository: Repository<HouseFitment>,
         @InjectRepository(HouseType, "fmj")
         private readonly houseTypeRepository: Repository<HouseType>,
-        @InjectRepository(HouseType, "zh_erp")
-        private readonly houseTypeZhRepository: Repository<HouseType>,
         @InjectRepository(HouseUsage, "fmj")
         private readonly houseUsageRepository: Repository<HouseUsage>,
-        @InjectRepository(HouseUsage, "zh_erp")
-        private readonly houseUsageZhRepository: Repository<HouseUsage>,
         @InjectRepository(HouseExpose, "fmj")
         private readonly houseExposeRepository: Repository<HouseExpose>,
-        @InjectRepository(HouseExpose, "zh_erp")
-        private readonly houseExposeZhRepository: Repository<HouseExpose>,
         @InjectRepository(Picture, "fmj")
         private readonly pictureRepository: Repository<Picture>,
-        @InjectRepository(Picture, "zh_erp")
-        private readonly pictureZhRepository: Repository<Picture>,
         @InjectRepository(HouseFeature, "fmj")
         private readonly houseFeatureRepository: Repository<HouseFeature>,
-        @InjectRepository(HouseFeature, "zh_erp")
-        private readonly houseFeatureZhRepository: Repository<HouseFeature>,
         @InjectRepository(HouseInnerPlant, "fmj")
         private readonly houseInnerPlantRepository: Repository<HouseInnerPlant>,
-        @InjectRepository(HouseInnerPlant, "zh_erp")
-        private readonly houseInnerPlantZhRepository: Repository<HouseInnerPlant>,
     ) { }
 
     //参数为字符串，允许的值为Object.keys(this)
@@ -79,7 +58,7 @@ export class FyRespository {
     public async update<T = any>(city: string, entity: new () => T, ...args: any[]) {
         return this.use<T>(city, entity).update(...args)
     }
-    public async delete<T = any>(city: string, entity: new () => T, data: FindOptionsWhere<Fy>) {
+    public async delete<T = any>(city: string, entity: new () => T, data: FindOptionsWhere<T>) {
         return this.use<T>(city, entity).delete(data)
     }
 }

@@ -1,6 +1,6 @@
-import { Agent } from "../meta_dl/agent";
-import { Fy } from "../meta_dl/fy";
-import { House } from "../meta_dl/house";
+import { Agent } from "../common/agent";
+import { Fy } from "../common/fy";
+import { House } from "../common/house";
 import { AgentRes } from "./agentRes";
 import { HouseExtra, HouseRes } from "./houseRes";
 
@@ -29,7 +29,7 @@ export class FyRes {
   /**
    * 出售信息id
    */
-  reqId: number;
+  reqId: string;
   /**
    * 信息状态
    */

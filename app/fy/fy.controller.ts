@@ -28,8 +28,8 @@ export class FyController {
                 if (isAgent) {
                     fyInfo.forEach(fy => fy.agentInfo.agentTel = fy.agentInfo.agentInnerTel);
                 } else {
-                    if (userInfo.agentId) {
-                        const agentInfo = await this.agentService.getAgentInfoById(header.city, userInfo.agentId);
+                    if (userInfo.bindInfo) {
+                        const agentInfo = await this.agentService.getAgentInfoById(header.city, userInfo.bindInfo.agentId);
                         if (agentInfo) {
                             fyInfo.forEach(fy => fy.agentInfo = agentInfo);
                         }
@@ -44,7 +44,7 @@ export class FyController {
     }
 
     @Get('getFyInfoById')
-    public async getFyInfoById(@Query('id') id: number, @Headers() header: { openid: string, city: string }): Promise<UsualRes<FyRes>> {
+    public async getFyInfoById(@Query('id') id: string, @Headers() header: { openid: string, city: string }): Promise<UsualRes<FyRes>> {
         const fyInfo = await this.fyService.getFyInfoById(id, header.city);
         if (!fyInfo) {
             return new UsualRes(-1, 'error: not exist id', null);
@@ -66,8 +66,8 @@ export class FyController {
                 if (innerTel !== null) fyInfo.agentInfo.agentTel = innerTel;
             } else {
                 //如果不是经纪人，检查是否绑定了经纪人，并将绑定经纪人信息代替原信息
-                if (userInfo.agentId) {
-                    const agentInfo = await this.agentService.getAgentInfoById(header.city, userInfo.agentId);
+                if (userInfo.bindInfo) {
+                    const agentInfo = await this.agentService.getAgentInfoById(header.city, userInfo.bindInfo.agentId);
                     if (agentInfo) {
                         fyInfo.agentInfo = agentInfo;
                     }

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Cache } from 'cache-manager';
 import { AgentRes } from 'lib/entity/response/agentRes';
 import { In, Like } from 'typeorm';
-import { Agent } from '../../lib/entity/meta_dl/agent';
+import { Agent } from '../../lib/entity/common/agent';
 import { AgentRepository } from './agent.repository';
 
 @Injectable()

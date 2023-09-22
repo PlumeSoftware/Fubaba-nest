@@ -1,4 +1,4 @@
-import { Agent } from "../meta_dl/agent"
+import { Agent } from "../common/agent"
 
 /**
  * Agent

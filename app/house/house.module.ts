@@ -2,12 +2,10 @@ import { Module } from '@nestjs/common';
 import { HouseController } from './house.controller';
 import { HouseService } from './house.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { entities as enDl } from '../../lib/entity/metaDl';
-import { entities as enZh } from '../../lib/entity/metaZh';
+import { entities} from '../../lib/entity/entites';
 
 @Module({
-  imports: [TypeOrmModule.forFeature(enDl, "fmj"),
-   TypeOrmModule.forFeature(enZh, "zh_erp")],
+  imports: [TypeOrmModule.forFeature(entities, "fmj")],
   controllers: [HouseController],
   providers: [HouseService]
 })

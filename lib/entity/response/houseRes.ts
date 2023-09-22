@@ -1,5 +1,5 @@
-import { House } from "../meta_dl/house";
-import { Picture } from "../meta_dl/picture";
+import { House } from "../common/house";
+import { Picture } from "../common/picture";
 
 /**
  * House
