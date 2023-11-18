@@ -14,17 +14,17 @@ export class AgentService {
         private readonly cacheManager: Cache,
     ) { }
     //获取经纪人    
-    public async getAgentList(city: string, agentIdList: Array<number> = []): Promise<Agent[]> {
-        return await this.repository.find(city, Agent, { where: { agentId: In(agentIdList) } });
+    public async getAgentList(agentIdList: Array<number> = []): Promise<Agent[]> {
+        return await this.repository.find(Agent, { where: { agentId: In(agentIdList) } });
     }
 
     //获取经纪人信息
-    public async getAgentInfoById(city: string, agentId: number): Promise<Agent> {
-        const targetAgent: Agent = (await this.repository.find(city, Agent, { where: { agentId: agentId } }))[0];
+    public async getAgentInfoById(agentId: number): Promise<Agent> {
+        const targetAgent: Agent = (await this.repository.find(Agent, { where: { agentId: agentId } }))[0];
         return targetAgent
     }
-    public async getAgentInfoByPhone(city: string, phone: string): Promise<Agent> {
-        const targetAgent = (await this.repository.find(city, Agent, { where: { agentTel: Like(`%${phone}%`) } }))[0];
+    public async getAgentInfoByPhone(phone: string): Promise<Agent> {
+        const targetAgent = (await this.repository.find(Agent, { where: { agentTel: Like(`%${phone}%`) } }))[0];
         return targetAgent
     }
 }

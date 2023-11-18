@@ -11,10 +11,10 @@ export class AgentController {
 
     @Get('/list')
     public async getAgentList(@Headers() header: { city: string }): Promise<any> {
-        return await this.agentService.getAgentList(header.city);
+        return await this.agentService.getAgentList();
     }
     @Get('/getAgentInfoById')
     public async getAgentInfoById(@Param('id') agentId: number, @Headers() header: { city: string }): Promise<AgentRes> {
-        return new AgentRes(await this.agentService.getAgentInfoById(header.city, agentId));
+        return new AgentRes(await this.agentService.getAgentInfoById( agentId));
     }
 }

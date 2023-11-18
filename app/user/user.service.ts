@@ -19,7 +19,7 @@ export class UserService {
         private readonly fubabaUserRepository: Repository<FubabaUser>,
     ) { }
 
-    public async login(city: string, code: string) {
+    public async login(code: string) {
         const result: WxAuthRes = await new Promise(r => this.httpService.get('https://api.weixin.qq.com/sns/jscode2session', {
             params: {
                 appid: this.configService.get('WEAPP_ID'),
@@ -28,14 +28,14 @@ export class UserService {
                 grant_type: 'authorization_code'
             }
         }).subscribe(data => r(data.data)));
-        return this.getUserInfo(city, result.openid);
+        return this.getUserInfo(result.openid);
     }
 
-    public async getUserInfo(city: string, openid: string): Promise<UserInfoRes> {
+    public async getUserInfo(openid: string): Promise<UserInfoRes> {
         const user = (await this.fubabaUserRepository.find({ where: { openid } }))[0];
         let bindInfo = null;
         if (user.agentId && user.agentCity) {
-            bindInfo = this.agentService.getAgentInfoById(city, user.agentId);
+            bindInfo = this.agentService.getAgentInfoById(user.agentId);
         }
         return new UserInfoRes(user, null, bindInfo);
     }

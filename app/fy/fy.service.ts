@@ -1,7 +1,6 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Fy } from '../../lib/entity/common/fy';
-import { Equal, In, Repository } from 'typeorm';
+import { Equal, In} from 'typeorm';
 import { FyRes } from 'lib/entity/response/fyRes';
 import { House } from 'lib/entity/common/house';
 import { HouseExtra, PictureRes, HouseFeature as HouseFeatureSet, } from 'lib/entity/response/houseRes';
@@ -12,7 +11,6 @@ import { AgentService } from 'app/agent/agent.service';
 import { FyInfoReq } from 'lib/entity/request/fyReq';
 import { FyRespository } from './fy.repository';
 
-import * as fs from 'fs';
 
 @Injectable()
 
@@ -46,8 +44,8 @@ export class FyService {
         }, 30000);
 
         const fyList = [];
-        fyList.push(...(await this.repository.find(city, Fy, { where: { reqStatus: Equal(0) }, order: { reqId: "DESC" } })));
-        this.cacheManager.set('fyList' + city, fyList, ttl);
+        fyList.push(...(await this.repository.find(Fy, { where: { reqStatus: Equal(0) }, order: { reqId: "DESC" } })));
+        this.cacheManager.set('fyList', fyList, ttl);
         const houseList = [];
         const agentList = [];
         const pictureList = [];
@@ -60,27 +58,27 @@ export class FyService {
             const queryReq = fyList.slice(i, i + maxQueryItem).map(i => i.reqId);
             const agentIdList = fyList.slice(i, i + maxQueryItem).map(i => i.agentId).filter((value, index, self) => self.indexOf(value) === index);
 
-            const r1 = await this.repository.find(city, House, { where: { houseId: In(queryHouse) } })
+            const r1 = await this.repository.find(House, { where: { houseId: In(queryHouse) } })
             houseList.push(...r1);
-            this.cacheManager.set('houseList' + city, houseList, ttl);
+            this.cacheManager.set('houseList', houseList, ttl);
 
-            const r2 = await this.agentService.getAgentList(city, agentIdList)
+            const r2 = await this.agentService.getAgentList(agentIdList)
             agentList.push(...r2);
-            this.cacheManager.set('agentList' + city, agentList, ttl);
+            this.cacheManager.set('agentList', agentList, ttl);
 
-            const r3 = await this.repository.find('dl', Picture, { where: { houseId: In(queryHouse) } })
+            const r3 = await this.repository.find(Picture, { where: { houseId: In(queryHouse) } })
             pictureList.push(...r3);
-            this.cacheManager.set('pictureList' + city, pictureList, ttl);
+            this.cacheManager.set('pictureList', pictureList, ttl);
 
             const r = await Promise.all(fyList.slice(i, i + maxQueryItem).map(async i => {
                 const houseInfo = houseList.find(j => j.houseId == i.reqHusId);
                 const agentInfo = agentList.find(j => j.agentId == i.agentId);
                 const pictureInfo = pictureList.filter(j => j.houseId == i.reqHusId);
-                const extra = await this.assembleExtra(city, houseInfo, pictureInfo);
+                const extra = await this.assembleExtra(houseInfo, pictureInfo);
                 return new FyRes(i, houseInfo, agentInfo, extra);
             }));
             fyResList.push(...r);
-            this.cacheManager.set('fyResList' + city, fyResList, ttl);
+            this.cacheManager.set('fyResList', fyResList, ttl);
         }
     }
 
@@ -88,34 +86,34 @@ export class FyService {
         const ttl = 1000 * 60 * 60 * 24 * 365;
 
         // const houseConstructionList = await this.houseConstructionRepository.find();
-        const houseConstructionList = await this.repository.find(city, HouseConstruction);
-        await this.cacheManager.set('houseConstructionList' + city, houseConstructionList, ttl);
+        const houseConstructionList = await this.repository.find(HouseConstruction);
+        await this.cacheManager.set('houseConstructionList', houseConstructionList, ttl);
 
-        const houseFitmentList = await this.repository.find(city, HouseFitment);
-        await this.cacheManager.set('houseFitmentList' + city, houseFitmentList, ttl);
+        const houseFitmentList = (await this.repository.find(HouseFitment)).map(i => { i.fitment = i.fitment.replaceAll(" ", ""); return i })
+        await this.cacheManager.set('houseFitmentList', houseFitmentList, ttl);
 
-        const houseTypeList = await this.repository.find(city, HouseType);
-        await this.cacheManager.set('houseTypeList' + city, houseTypeList, ttl);
+        const houseTypeList = await this.repository.find(HouseType);
+        await this.cacheManager.set('houseTypeList', houseTypeList, ttl);
 
-        const houseUsageList = await this.repository.find(city, HouseUsage);
-        await this.cacheManager.set('houseUsageList' + city, houseUsageList, ttl);
+        const houseUsageList = await this.repository.find(HouseUsage);
+        await this.cacheManager.set('houseUsageList', houseUsageList, ttl);
 
-        const houseExposeList = await this.repository.find(city, HouseExpose);
-        await this.cacheManager.set('houseExposeList' + city, houseExposeList, ttl);
+        const houseExposeList = await this.repository.find(HouseExpose);
+        await this.cacheManager.set('houseExposeList', houseExposeList, ttl);
 
-        const houseFeatureList = await this.repository.find(city, HouseFeature);
-        await this.cacheManager.set('houseFeatureList' + city, houseFeatureList, ttl);
+        const houseFeatureList = await this.repository.find(HouseFeature);
+        await this.cacheManager.set('houseFeatureList', houseFeatureList, ttl);
 
-        const houseInnerPlantList = await this.repository.find(city, HouseInnerPlant, { where: { type: 88 } });
-        await this.cacheManager.set('houseInnerPlantList' + city, houseInnerPlantList, ttl);
+        const houseInnerPlantList = await this.repository.find(HouseInnerPlant, { where: { type: 88 } });
+        await this.cacheManager.set('houseInnerPlantList', houseInnerPlantList, ttl);
     }
 
-    private async assembleExtra(city: string, houseInfo: House, pictureList: Array<Picture>): Promise<HouseExtra> {
-        const houseConstructionList = await this.cacheManager.get<HouseConstruction[]>('houseConstructionList' + city);
-        const houseUsageList = await this.cacheManager.get<HouseUsage[]>('houseUsageList' + city);
-        const houseExposeList = await this.cacheManager.get<HouseExpose[]>('houseExposeList' + city);
-        const houseFeatureList = await this.cacheManager.get<HouseFeature[]>('houseFeatureList' + city);
-        const houseInnerPlantList = await this.cacheManager.get<HouseInnerPlant[]>('houseInnerPlantList' + city);
+    private async assembleExtra(houseInfo: House, pictureList: Array<Picture>): Promise<HouseExtra> {
+        const houseConstructionList = await this.cacheManager.get<HouseConstruction[]>('houseConstructionList');
+        const houseUsageList = await this.cacheManager.get<HouseUsage[]>('houseUsageList');
+        const houseExposeList = await this.cacheManager.get<HouseExpose[]>('houseExposeList');
+        const houseFeatureList = await this.cacheManager.get<HouseFeature[]>('houseFeatureList');
+        const houseInnerPlantList = await this.cacheManager.get<HouseInnerPlant[]>('houseInnerPlantList');
 
         const houseFeature = []
         const houseInnerPlant = []
@@ -133,7 +131,7 @@ export class FyService {
             houseInnerPlant.push(...houseInnerPlantList.filter(i => houseInnerPlantCodeList.includes(i.plantId)));
         }
         const extra: HouseExtra = {
-            houseFitment: houseInfo?.houseFitment || '',
+            houseFitment: houseInfo?.houseFitment.replaceAll(" ","") || '',
             houseConstruction: houseConstructionList.find(i => i.constructionId == houseInfo?.houseConstructionCode)?.construction || '',
             pictures: pictureList.filter(i => i.houseId == houseInfo?.houseId).map(i => new PictureRes(i)),
             houseUsage: houseInfo?.houseUsageCode ? houseUsageList.find(i => i.usageId == houseInfo?.houseUsageCode)?.usage : '',
@@ -160,7 +158,7 @@ export class FyService {
 
     //转换参数成为find的where
     //不用进一步抽象了，再往上提真不好运维了
-    private async filter2Where(city: string, type: string, value: string | number): Promise<(info: FyRes) => boolean> {
+    private async filter2Where(type: string, value: string | number): Promise<(info: FyRes) => boolean> {
         switch (type) {
             case "name": {
                 return function (fy: FyRes) { return fy.houseInfo?.houseAddress?.includes(value.toString()) };
@@ -189,7 +187,7 @@ export class FyService {
             case "room":
                 return function (fy: FyRes) { return fy.houseInfo?.houseRooms == value };
             case "expose": {
-                const houseExposeList = await this.cacheManager.get<HouseExpose[]>('houseExposeList' + city);
+                const houseExposeList = await this.cacheManager.get<HouseExpose[]>('houseExposeList');
                 //将查询值转换为数据库可用值
                 const expose = value.toString().replace('S', '南').replace('N', '北').replace('E', '东').replace('W', '西');
                 return function (fy: FyRes) { return fy.houseInfo?.houseExpose == houseExposeList.find(i => i.expose == expose)?.expose };
@@ -201,13 +199,13 @@ export class FyService {
                     case "H": return function (fy: FyRes) { return fy.houseInfo?.houseInFloor > 9 };
                 }
             case "fitment":
-                const houseFitmentList = await this.cacheManager.get<HouseFitment[]>('houseFitmentList' + city);
+                const houseFitmentList = await this.cacheManager.get<HouseFitment[]>('houseFitmentList');
                 //将houseFitmentCode转换为字典
                 const dickey = ["A", "B", "C", "D", "E"]
                 const dic = houseFitmentList.map((i, index) => { return { key: dickey[index], value: i.fitment } })
                 return function (fy: FyRes) { return dic.find(i => i.value == fy.houseInfo?.houseFitment)?.key == value };
             case "usage":
-                const houseUsageList = await this.cacheManager.get<HouseUsage[]>('houseUsageList' + city);
+                const houseUsageList = await this.cacheManager.get<HouseUsage[]>('houseUsageList');
                 switch (value) {
                     case "A": return function (fy: FyRes) { return fy.houseInfo?.houseUsage == houseUsageList.find(i => i.usage == "普通住宅")?.usage };
                     case "B": return function (fy: FyRes) { return fy.houseInfo?.houseUsage == houseUsageList.find(i => i.usage == "公建")?.usage };
@@ -216,7 +214,7 @@ export class FyService {
                     case "E": return function (fy: FyRes) { return fy.houseInfo?.houseUsage == houseUsageList.find(i => i.usage == "写字楼")?.usage };
                 }
             case "construct":
-                const houseConstructionList = await this.cacheManager.get<HouseConstruction[]>('houseConstructionList' + city);
+                const houseConstructionList = await this.cacheManager.get<HouseConstruction[]>('houseConstructionList');
                 switch (value) {
                     case "A": return function (fy: FyRes) { return fy.houseInfo?.houseConstruction == houseConstructionList.find(i => i.construction == "框架")?.construction };
                     case "B": return function (fy: FyRes) { return fy.houseInfo?.houseConstruction == houseConstructionList.find(i => i.construction == "砖混")?.construction };
@@ -230,17 +228,17 @@ export class FyService {
         }
     }
 
-    public async getFyInfoById(reqId: string, city: string): Promise<FyRes> {
+    public async getFyInfoById(reqId: string): Promise<FyRes> {
         //房源基础信息
         try {
             console.log('getFyInfoById', reqId);
-            const fyInfo = (await this.repository.find(city, Fy, { where: { reqId: reqId } }))[0];
-            const houseInfo = (await this.repository.find(city, House, { where: { houseId: fyInfo.reqHusId } }))[0];
-            const agentInfo = await this.agentService.getAgentInfoById(city, fyInfo.agentId);
-            const pictureList = await this.repository.find(city, House, { where: { houseId: houseInfo.houseId } });
+            const fyInfo = (await this.repository.find(Fy, { where: { reqId: reqId } }))[0];
+            const houseInfo = (await this.repository.find(House, { where: { houseId: fyInfo.reqHusId } }))[0];
+            const agentInfo = await this.agentService.getAgentInfoById(fyInfo.agentId);
+            const pictureList = await this.repository.find(Picture, { where: { houseId: houseInfo.houseId } });
 
             //房源额外信息
-            const extra = await this.assembleExtra(city, houseInfo, pictureList);
+            const extra = await this.assembleExtra(houseInfo, pictureList);
 
             return new FyRes(fyInfo, houseInfo, agentInfo, extra);
         } catch (e) {
@@ -249,11 +247,11 @@ export class FyService {
     }
 
 
-    public async getFyInfo(city: string, page: number = 0, filter: FyInfoReq, sort: string): Promise<FyRes[]> {
+    public async getFyInfo(page: number = 0, filter: FyInfoReq, sort: string): Promise<FyRes[]> {
         //js filter
         //相同字段的筛选为或关系，不同字段的筛选为与关系
         const houseFilter: any = {}
-        let fyResList = await this.cacheManager.get<FyRes[]>('fyResList' + city);
+        let fyResList = await this.cacheManager.get<FyRes[]>('fyResList');
         await Promise.all(Object.keys(filter).map(async (key) => {
             if (filter[key]) {
                 switch (key) {
@@ -264,7 +262,7 @@ export class FyService {
                             houseFilter[key].push(function (fy: FyRes) { return fy.reqAmt >= Number(priceList[0]) && fy.reqAmt <= Number(priceList[1]) })
                         } else {
                             filter[key].split(',').forEach(async (value: string | number) => {
-                                houseFilter[key].push(await this.filter2Where(city, key, value));
+                                houseFilter[key].push(await this.filter2Where(key, value));
                             })
                         }
                         break;
@@ -286,7 +284,7 @@ export class FyService {
                         filter[key].split(',').forEach(async (value: string | number) => {
                             //将筛选值转化为筛选器
                             if (!houseFilter[key]) houseFilter[key] = [];
-                            houseFilter[key].push(await this.filter2Where(city, key, value));
+                            houseFilter[key].push(await this.filter2Where(key, value));
                         })
                     }
                 }
