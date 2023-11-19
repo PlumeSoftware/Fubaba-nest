@@ -50,12 +50,13 @@ export class FyRes {
 
   constructor(fy: Fy, house: House, agent: Agent, extra: HouseExtra) {
     if (fy) {
-      this.releaseTime = fy.releaseTime;
       this.reqId = fy.reqId;
+      this.reqType = fy.reqType;
       this.adRemark = fy.remark;
       this.reqAmt = fy.reqAmt;
       this.reqAmt2 = fy.reqAmt2;
       this.reqAmt3 = fy.reqAmt3;
+      this.releaseTime = fy.releaseTime;
     }
     if (agent) {
       this.agentInfo = new AgentRes(agent);
